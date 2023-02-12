@@ -2,8 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.2'
 	id 'io.spring.dependency-management' version '1.1.0'
-//	id 'com.palantir.docker' version "${palantirVersion}"
-//	id 'com.palantir.docker-run' version "${palantirVersion}"
 }
 
 group = 'fantasy-baseball'
@@ -26,18 +24,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-//docker {
-//	dependsOn(build)
-//	print "$buildDir\\libs\\${project.name}-${project.version}.jar"
-//	name "fbb/${project.name}:${project.version}"
-//	files tasks.build.outputs, "$buildDir/libs/${project.name}-${project.version}.jar"
-//	//files "$buildDir\\libs\\${project.name}-${project.version}.jar"
-//}
-//
-////dockerRun {
-////	name "${project.name}"
-////	image "${project.name}:${project.version}"
-////	ports '8080:8080'
-////	clean true
-////}
