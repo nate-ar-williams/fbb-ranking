@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.entities;
+package fantasybaseball.ranker.model;
 
 public class HitterProjections {
 
