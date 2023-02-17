@@ -9,6 +9,8 @@ services:
       - mongodb:host.docker.internal
     depends_on:
       - mongodb
+    volumes:
+      - ./resources:/resources
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -23,4 +25,5 @@ services:
       - mongodb_data_container:/data/db
 
 volumes:
+  resources:
   mongodb_data_container:

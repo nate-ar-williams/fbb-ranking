@@ -7,7 +7,4 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PlayerRepository extends MongoRepository<Player, String> {
-
-    List<Player> findByLastName(@Param("lastName") String lastName);
-
 }

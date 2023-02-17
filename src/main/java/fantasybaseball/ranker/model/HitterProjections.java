@@ -1,5 +1,8 @@
 package fantasybaseball.ranker.model;
 
+import lombok.Builder;
+
+@Builder
 public class HitterProjections {
 
     public int runs;

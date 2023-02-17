@@ -17,9 +17,7 @@ public class Player {
     @Id
     public String id;
 
-    public String firstName;
-
-    public String lastName;
+    public String name;
 
     public List<Position> positions;
 

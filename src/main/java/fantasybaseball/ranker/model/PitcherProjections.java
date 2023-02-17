@@ -1,5 +1,8 @@
 package fantasybaseball.ranker.model;
 
+import lombok.Builder;
+
+@Builder
 public class PitcherProjections {
 
     // store instead of IP so that we don't have to deal with storing decimals
