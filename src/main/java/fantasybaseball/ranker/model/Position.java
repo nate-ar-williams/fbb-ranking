@@ -9,6 +9,7 @@ public enum Position {
     LF,
     RF,
     CF,
+    OF,
     DH,
     C,
     RP,

@@ -2,6 +2,7 @@ package fantasybaseball.ranker.csv.metadata;
 
 public class HitterCsvMetadata {
     public static final int NAME_INDEX = 0;
+    public static final int TEAM_INDEX = 1;
     public static final int PLATE_APPEARANCES_INDEX = 3;
     public static final int SINGLES_INDEX = 6;
     public static final int DOUBLES_INDEX = 7;

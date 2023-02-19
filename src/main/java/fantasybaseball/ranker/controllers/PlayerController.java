@@ -4,17 +4,17 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import fantasybaseball.ranker.csv.metadata.HitterCsvMetadata;
 import fantasybaseball.ranker.csv.metadata.PitcherCsvMetadata;
-import fantasybaseball.ranker.model.HitterProjections;
-import fantasybaseball.ranker.model.PitcherProjections;
-import fantasybaseball.ranker.model.Player;
+import fantasybaseball.ranker.csv.metadata.PositionsCsvMetadata;
+import fantasybaseball.ranker.model.*;
 import fantasybaseball.ranker.repository.PlayerRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static fantasybaseball.ranker.csv.metadata.HitterCsvMetadata.*;
 import static fantasybaseball.ranker.csv.metadata.PitcherCsvMetadata.*;
@@ -50,10 +50,13 @@ public class PlayerController {
                 .build()) {
             String[] nextRecord = null;
             while ((nextRecord = reader.readNext()) != null) {
+                Optional<Player> found = repository.findById(nextRecord[PitcherCsvMetadata.ID_INDEX]);
+                PitcherProjections pitcherProjections = found.orElse(Player.builder().build()).pitcherProjections;
                 Player player =
                         Player.builder()
                                 .id(nextRecord[HitterCsvMetadata.ID_INDEX])
-                                .name(nextRecord[HitterCsvMetadata.NAME_INDEX])
+                                .name(StringUtils.stripAccents(nextRecord[HitterCsvMetadata.NAME_INDEX]).toUpperCase())
+                                .team(Team.getValue(nextRecord[HitterCsvMetadata.TEAM_INDEX]))
                                 .hitterProjections(
                                         HitterProjections.builder()
                                                 .plateAppearances(Integer.parseInt(nextRecord[PLATE_APPEARANCES_INDEX]))
@@ -71,6 +74,7 @@ public class PlayerController {
                                                 .caughtStealing(Integer.parseInt(nextRecord[CAUGHT_STEALING_INDEX]))
                                                 .build()
                                 )
+                                .pitcherProjections(pitcherProjections)
                                 .build();
                 repository.save(player);
                 playersSaved++;
@@ -87,14 +91,16 @@ public class PlayerController {
                 HitterProjections hitterProjections = found.orElse(Player.builder().build()).hitterProjections;
                 Player player = Player.builder()
                         .id(nextRecord[PitcherCsvMetadata.ID_INDEX])
-                        .name(nextRecord[PitcherCsvMetadata.NAME_INDEX])
+                        .name(StringUtils.stripAccents(nextRecord[PitcherCsvMetadata.NAME_INDEX]).toUpperCase())
+                        .team(Team.getValue(nextRecord[PitcherCsvMetadata.TEAM_INDEX]))
+                        .positions(List.of(Integer.parseInt(nextRecord[QUALITY_START_INDEX]) > 0 ? Position.SP : Position.RP))
                         .pitcherProjections(
                                 PitcherProjections.builder()
                                         .outsRecorded(Integer.parseInt(nextRecord[OUTS_RECORDED_INDEX]) * 3)
                                         .strikeouts(Integer.parseInt(nextRecord[PitcherCsvMetadata.STRIKEOUTS_INDEX]))
                                         .walks(Integer.parseInt(nextRecord[PitcherCsvMetadata.WALKS_INDEX]))
                                         .earnedRunsAllowed(Integer.parseInt(nextRecord[EARNED_RUNS_INDEX]))
-                                        .qualityStarts(Integer.parseInt(nextRecord[OUTS_RECORDED_INDEX]))
+                                        .qualityStarts(Integer.parseInt(nextRecord[QUALITY_START_INDEX]))
                                         .completeGames(0)
                                         .saves(Integer.parseInt(nextRecord[SAVES_INDEX]))
                                         .holds(Integer.parseInt(nextRecord[HOLDS_INDEX]))
@@ -105,7 +111,51 @@ public class PlayerController {
                 playersSaved++;
             }
         }
+        try (CSVReader reader = new CSVReaderBuilder(
+                new FileReader("/resources/positions-hitters.csv"))
+                .withSkipLines(1)
+                .build()) {
+            String[] nextRecord = null;
+            // add positions
+            while ((nextRecord = reader.readNext()) != null) {
+                List<Player> found = repository.findByName(
+                        StringUtils.stripAccents(nextRecord[PositionsCsvMetadata.NAME_INDEX]).toUpperCase());
+                if (!found.isEmpty()) {
+                    Player player = found.get(0);
+                    List<Position> positions = player.positions == null ? new ArrayList<>() : player.positions;
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.C_INDEX]) >=20) {
+                        positions.add(Position.C);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.FIRST_BASE_INDEX]) >=20) {
+                        positions.add(Position.FIRST);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.SECOND_BASE_INDEX]) >=20) {
+                        positions.add(Position.SECOND);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.THIRD_BASE_INDEX]) >=20) {
+                        positions.add(Position.THIRD);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.SHORTSTOP_INDEX]) >=20) {
+                        positions.add(Position.SS);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.LEFT_FIELD_INDEX]) >=20) {
+                        positions.add(Position.LF);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.RIGHT_FIELD_INDEX]) >=20) {
+                        positions.add(Position.RF);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.CENTER_FIELD_INDEX]) >=20) {
+                        positions.add(Position.CF);
+                    }
+                    if (Integer.parseInt(nextRecord[PositionsCsvMetadata.OUTFIELD_INDEX]) >=20) {
+                        positions.add(Position.OF);
+                    }
+                    player.positions = positions.stream().distinct().collect(Collectors.toList());
 
+                    repository.save(player);
+                }
+            }
+        }
         return "saved " + playersSaved + " players" ;
     }
 

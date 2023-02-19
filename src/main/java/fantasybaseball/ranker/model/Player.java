@@ -19,6 +19,8 @@ public class Player {
 
     public String name;
 
+    public Team team;
+
     public List<Position> positions;
 
     @Nullable
