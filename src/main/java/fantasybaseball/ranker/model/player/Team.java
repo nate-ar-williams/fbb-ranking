@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.player;
 
 public enum Team {
     ARI,

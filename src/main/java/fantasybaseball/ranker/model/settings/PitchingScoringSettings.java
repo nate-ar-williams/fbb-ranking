@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.settings;
 
 public class PitchingScoringSettings {
 

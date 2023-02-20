@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.player;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

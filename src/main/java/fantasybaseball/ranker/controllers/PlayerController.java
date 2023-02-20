@@ -5,7 +5,7 @@ import com.opencsv.CSVReaderBuilder;
 import fantasybaseball.ranker.csv.metadata.HitterCsvMetadata;
 import fantasybaseball.ranker.csv.metadata.PitcherCsvMetadata;
 import fantasybaseball.ranker.csv.metadata.PositionsCsvMetadata;
-import fantasybaseball.ranker.model.*;
+import fantasybaseball.ranker.model.player.*;
 import fantasybaseball.ranker.repository.PlayerRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,9 @@ public class PlayerController {
                         .id(nextRecord[PitcherCsvMetadata.ID_INDEX])
                         .name(StringUtils.stripAccents(nextRecord[PitcherCsvMetadata.NAME_INDEX]).toUpperCase())
                         .team(Team.getValue(nextRecord[PitcherCsvMetadata.TEAM_INDEX]))
-                        .positions(List.of(Integer.parseInt(nextRecord[QUALITY_START_INDEX]) > 0 ? Position.SP : Position.RP))
+                        .positions(List.of(
+                                Position.P,
+                                Integer.parseInt(nextRecord[QUALITY_START_INDEX]) > 0 ? Position.SP : Position.RP))
                         .pitcherProjections(
                                 PitcherProjections.builder()
                                         .outsRecorded(Integer.parseInt(nextRecord[OUTS_RECORDED_INDEX]) * 3)
@@ -150,6 +152,7 @@ public class PlayerController {
                     if (Integer.parseInt(nextRecord[PositionsCsvMetadata.OUTFIELD_INDEX]) >=20) {
                         positions.add(Position.OF);
                     }
+                    positions.add(Position.UTIL);
                     player.positions = positions.stream().distinct().collect(Collectors.toList());
 
                     repository.save(player);

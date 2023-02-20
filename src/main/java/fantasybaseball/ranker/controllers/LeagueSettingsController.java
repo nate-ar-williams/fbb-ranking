@@ -1,9 +1,7 @@
 package fantasybaseball.ranker.controllers;
 
-import fantasybaseball.ranker.model.LeagueSettings;
-import fantasybaseball.ranker.model.Player;
+import fantasybaseball.ranker.model.settings.LeagueSettings;
 import fantasybaseball.ranker.repository.LeagueSettingsRepository;
-import fantasybaseball.ranker.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

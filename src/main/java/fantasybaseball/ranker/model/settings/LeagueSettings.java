@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.settings;
 
 import lombok.Builder;
 import org.springframework.data.annotation.Id;

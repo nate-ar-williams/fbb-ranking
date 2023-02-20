@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.settings;
 
 public class RosterSettings {
     public int catchers;
@@ -14,6 +14,7 @@ public class RosterSettings {
     public int infield;
     public int outfield;
     public int designatedHitter;
+
     public int util;
     public int pitcher;
     public int startingPitcher;

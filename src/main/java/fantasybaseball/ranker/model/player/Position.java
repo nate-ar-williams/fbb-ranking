@@ -1,4 +1,4 @@
-package fantasybaseball.ranker.model;
+package fantasybaseball.ranker.model.player;
 
 
 public enum Position {
@@ -11,8 +11,10 @@ public enum Position {
     CF,
     OF,
     DH,
+    UTIL,
     C,
     RP,
-    SP
+    SP,
+    P
 
 }
